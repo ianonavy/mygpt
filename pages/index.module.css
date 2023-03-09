@@ -14,7 +14,8 @@
   font-style: normal;
 }
 .main,
-.main input {
+.main input,
+.main textarea {
   font-size: 16px;
   line-height: 24px;
   color: #353740;
@@ -38,14 +39,15 @@
 }
 .main form {
   display: flex;
-  flex-direction: column;
-  width: 320px;
+  flex-direction: row;
+  width: 620px;
+  gap: 1rem;
 }
-.main input[type="text"] {
+.main textarea {
+  flex: 7;
   padding: 12px 16px;
   border: 1px solid #10a37f;
   border-radius: 4px;
-  margin-bottom: 24px;
   outline-color: #10a37f;
 }
 .main ::placeholder {
@@ -53,6 +55,7 @@
   opacity: 1;
 }
 .main input[type="submit"] {
+  flex: 1;
   padding: 12px 0;
   color: #fff;
   background-color: #10a37f;
@@ -64,4 +67,25 @@
 .main .result {
   font-weight: bold;
   margin-top: 40px;
+}
+
+.chatbox {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.message {
+  display: flex;
+  align-items: start;
+  padding: 1rem 0;
+}
+
+.message:nth-child(odd) {
+  background-color: #eee;
+}
+
+.message:nth-child(even) {
+  background-color: #f8f8f8;
 }

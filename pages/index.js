@@ -41,17 +41,11 @@ export default function Home() {
         <img src="/dog.png" className={styles.icon} />
         <h3>MyGPT</h3>
         <div
+          className={styles.chatbox}
           style={{ width: "800px", display: "flex", flexDirection: "column" }}
         >
           {messages.map((message, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                alignItems: "start",
-                marginBottom: "10px",
-              }}
-            >
+            <div key={index} className={styles.message}>
               <div
                 style={{
                   width: "100px",
@@ -62,20 +56,20 @@ export default function Home() {
                 {index % 2 === 0 ? "You:" : "MyGPT:"}
               </div>
               <div style={{ flex: 1 }}>
-                <span style={{ whiteSpace: "pre-wrap" }}>{message}</span>
+                <span style={{ whiteSpace: "pre-wrap" }}>{message.trim()}</span>
               </div>
             </div>
           ))}
         </div>
         <form onSubmit={onSubmit}>
-          <input
+          <textarea
             type="text"
             name="animal"
-            placeholder="Enter an animal"
+            placeholder=""
             value={animalInput}
             onChange={(e) => setAnimalInput(e.target.value)}
           />
-          <input type="submit" value="Generate names" />
+          <input type="submit" value="Submit" />
         </form>
       </main>
     </div>
