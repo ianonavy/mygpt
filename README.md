@@ -1,10 +1,28 @@
 # MyGPT
 
-MyGPT is a free ChatGPT clone powered by the same backend model. Its use requires a
-paid OpenAI developer plan and a valid API token.
+MyGPT is a free, alternative UI for OpenAI chat models. It uses the same backend model
+as ChatGPT. This project is not affiliated with OpenAI.
 
-The intent of this project is to offer end users an option to use a simple
-ChatGPT-like product without having to pay for a full ChatGPT Plus subscription plan.
+Use of this project requires a paid OpenAI developer plan and a valid API token.
+
+This project aims to enable savvy users to use a ChatGPT-like product on a pay-per-use
+pricing model instead of a monthly subscription. The code is provided without any
+warranties, and it is not intended to be run as a public SaaS offering.
+
+![Screenshot of MyGPT. Conversation reads as follows. You: who are you?  MyGPT: I am MyGPT, a helpful AI assistant designed to assist and answer questions. You: who created you? MyGPT: I was created by OpenAI. You: what can you do? MyGPT: I can assist with natural language processing tasks such as language translation, text summarization, question-answering, and more.](public/screenshot.png)
+
+## Features
+
+- [x] Basic conversation via OpenAI API
+- [x] Streaming message generation
+- [x] Code syntax highlighting
+- [ ] Configurable system prompt
+- [ ] "Click to copy" code
+- [ ] Token/cost estimator
+- [ ] Stop generating
+- [ ] Regenerate last response
+- [ ] Edit messages
+- [ ] Review past sessions
 
 ## Setup
 
