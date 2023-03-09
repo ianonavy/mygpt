@@ -33,13 +33,13 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart</title>
+        <title>MyGPT</title>
         <link rel="icon" href="/dog.png" />
       </Head>
 
       <main className={styles.main}>
         <img src="/dog.png" className={styles.icon} />
-        <h3>Name my pet</h3>
+        <h3>MyGPT</h3>
         <div
           style={{ width: "800px", display: "flex", flexDirection: "column" }}
         >
