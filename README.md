@@ -23,6 +23,8 @@ warranties, and it is not intended to be run as a public SaaS offering.
 - [ ] Regenerate last response
 - [ ] Edit messages
 - [ ] Review past sessions
+- [ ] Screenreader/accessibility hints
+- [ ] Snazzy logo
 
 ## Setup
 
