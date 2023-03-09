@@ -89,3 +89,11 @@
 .message:nth-child(even) {
   background-color: #f8f8f8;
 }
+
+.main p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.main p:last-child {
+  margin: 0;
+}

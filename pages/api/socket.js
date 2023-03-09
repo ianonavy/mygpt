@@ -33,6 +33,7 @@ const generateChat = async (socket, messages) => {
             role: "assistant",
             content: assistantMessage,
           });
+          console.log(assistantMessage);
           return; // Stream finished
         }
         try {
@@ -92,7 +93,15 @@ const SocketHandler = async (req, res) => {
 
     io.on("connection", (socket) => {
       const socketId = socket.id;
-      sessions.set(socketId, { messages: [] });
+      sessions.set(socketId, {
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a helpful assistant. Keep responses brief. Wrap all code blocks in markdown.",
+          },
+        ],
+      });
 
       console.log("User connected");
 

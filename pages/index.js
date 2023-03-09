@@ -2,6 +2,11 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import styles from "./index.module.css";
+import ReactMarkdown from "react-markdown";
+import SyntaxHighlighter from "react-syntax-highlighter";
+// import { vs } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { solarizedDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+
 let socket;
 
 export default function Home() {
@@ -56,7 +61,31 @@ export default function Home() {
                 {index % 2 === 0 ? "You:" : "MyGPT:"}
               </div>
               <div style={{ flex: 1 }}>
-                <span style={{ whiteSpace: "pre-wrap" }}>{message.trim()}</span>
+                <ReactMarkdown
+                  children={message.trim()}
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      const match = /language-(\w+)/.exec(className || "");
+                      console.log(node, inline, className, children, props);
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          children={String(children).replace(/\n$/, "")}
+                          style={solarizedDark}
+                          language={match[1]}
+                          PreTag="div"
+                          {...props}
+                        />
+                      ) : (
+                        <SyntaxHighlighter
+                          children={String(children).replace(/\n$/, "")}
+                          style={solarizedDark}
+                          PreTag="div"
+                          {...props}
+                        />
+                      );
+                    },
+                  }}
+                />
               </div>
             </div>
           ))}
