@@ -79,7 +79,7 @@
 .message {
   display: flex;
   align-items: start;
-  padding: 1rem 0;
+  padding: 1rem 1rem 1rem 0;
 }
 
 .message:nth-child(odd) {
@@ -96,4 +96,12 @@
 }
 .main p:last-child {
   margin: 0;
+}
+
+.main pre,
+.main code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  max-width: 600px;
 }

@@ -51,7 +51,6 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <img src="/dog.png" className={styles.icon} />
         <h3>MyGPT</h3>
         <div
           className={styles.chatbox}
@@ -61,7 +60,7 @@ export default function Home() {
             <div key={index} className={styles.message}>
               <div
                 style={{
-                  width: "100px",
+                  width: "80px",
                   textAlign: "right",
                   paddingRight: "10px",
                 }}
