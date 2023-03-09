@@ -6,13 +6,12 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const handleAnimal = async (socket, animal) => {
+const generateChat = async (socket, messages) => {
   try {
-    const completion = await openai.createCompletion(
+    const completion = await openai.createChatCompletion(
       {
-        model: "text-davinci-003",
-        prompt: generatePrompt(animal),
-        temperature: 0.6,
+        model: "gpt-3.5-turbo",
+        messages: messages,
         stream: true,
       },
       { responseType: "stream" }
@@ -31,8 +30,10 @@ const handleAnimal = async (socket, animal) => {
         }
         try {
           const parsed = JSON.parse(message);
-          console.log(parsed.choices[0].text);
-          socket.emit("message", parsed.choices[0].text);
+          const nextMessage = parsed.choices[0]?.delta?.content;
+          if (nextMessage != null) {
+            socket.emit("message", nextMessage);
+          }
         } catch (error) {
           console.error("Could not JSON parse stream message", message, error);
         }
@@ -90,8 +91,9 @@ const SocketHandler = async (req, res) => {
         console.log("User disconnected");
       });
 
-      socket.on("animal", async (msg) => {
-        await handleAnimal(socket, msg);
+      socket.on("animal", async (content) => {
+        const messages = [{ role: "user", content }];
+        await generateChat(socket, messages);
       });
     });
   }

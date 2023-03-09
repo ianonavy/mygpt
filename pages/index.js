@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     const socketInitializer = async () => {
-      await fetch("/api/socket");
+      await fetch("/api/socket?reset=true");
       socket = io();
 
       socket.on("connect", () => {
@@ -25,6 +25,7 @@ export default function Home() {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setResult("");
     socket.emit("animal", animalInput);
     setAnimalInput("");
   };
