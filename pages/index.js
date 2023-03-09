@@ -35,6 +35,14 @@ export default function Home() {
     setAnimalInput("");
   };
 
+  const onKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      event.stopPropagation();
+      onSubmit(event);
+    }
+  };
+
   return (
     <div>
       <Head>
@@ -90,7 +98,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
           <textarea
             type="text"
             name="animal"
