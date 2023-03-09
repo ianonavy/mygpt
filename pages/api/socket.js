@@ -6,10 +6,11 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const generateChat = async (socket, messages) => {
+const generateChat = async (socket, messages, isStopped) => {
   const socketId = socket.id;
   const socketSession = sessions.get(socketId);
   console.log("Messages:", messages);
+  const controller = new AbortController();
   try {
     const completion = await openai.createChatCompletion(
       {
@@ -17,7 +18,7 @@ const generateChat = async (socket, messages) => {
         messages: messages,
         stream: true,
       },
-      { responseType: "stream" }
+      { responseType: "stream", signal: controller.signal }
     );
 
     completion.data.on("data", (data) => {
@@ -28,12 +29,19 @@ const generateChat = async (socket, messages) => {
       let assistantMessage = "";
       for (const line of lines) {
         const message = line.replace(/^data: /, "");
-        if (message === "[DONE]") {
+        const stopped = isStopped();
+        if (message === "[DONE]" || stopped) {
           socketSession.messages.push({
             role: "assistant",
             content: assistantMessage,
           });
-          console.log(assistantMessage);
+          console.log("assistant:", assistantMessage);
+          socket.emit("messageEnd", "");
+          if (stopped) {
+            console.log("message:", message);
+            console.log("aborted!");
+            controller.abort();
+          }
           return; // Stream finished
         }
         try {
@@ -109,12 +117,19 @@ const SocketHandler = async (req, res) => {
         console.log("User disconnected");
       });
 
+      let isStopped = false;
+
       socket.on("userMessage", async (content) => {
         const socketId = socket.id;
         const socketSession = sessions.get(socketId);
         const userMessage = { role: "user", content };
         socketSession.messages.push(userMessage);
-        await generateChat(socket, socketSession.messages);
+        isStopped = false;
+        await generateChat(socket, socketSession.messages, () => isStopped);
+      });
+
+      socket.on("stopGeneration", async () => {
+        isStopped = true;
       });
     });
   }

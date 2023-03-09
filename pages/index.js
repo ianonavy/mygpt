@@ -9,8 +9,9 @@ import { solarizedDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 let socket;
 
 export default function Home() {
-  const [animalInput, setAnimalInput] = useState("");
+  const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     const socketInitializer = async () => {
@@ -23,15 +24,20 @@ export default function Home() {
       socket.on("messagePart", (e) => {
         setMessages((r) => [...r.slice(0, -1), r[r.length - 1] + e]);
       });
+      socket.on("messageEnd", () => {
+        setGenerating(false);
+      });
     };
     socketInitializer();
   }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    socket.emit("userMessage", animalInput);
-    setMessages((r) => [...r, animalInput, ""]);
-    setAnimalInput("");
+    console.log(e.target);
+    socket.emit("userMessage", userInput);
+    setMessages((r) => [...r, userInput, ""]);
+    setUserInput("");
+    setGenerating(true);
   };
 
   const onKeyDown = (event) => {
@@ -40,6 +46,10 @@ export default function Home() {
       event.stopPropagation();
       onSubmit(event);
     }
+  };
+
+  const stopGeneration = (e) => {
+    socket.emit("stopGeneration");
   };
 
   return (
@@ -66,7 +76,7 @@ export default function Home() {
               >
                 {index % 2 === 0 ? "You:" : "MyGPT:"}
               </div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, whiteSpace: "pre-line" }}>
                 <ReactMarkdown
                   children={message.trim()}
                   components={{
@@ -92,16 +102,26 @@ export default function Home() {
                   }}
                 />
               </div>
+              {generating && index == messages.length - 1 && (
+                <input
+                  name="stop"
+                  className={styles.stop}
+                  onClick={stopGeneration}
+                  type="button"
+                  value="Stop"
+                />
+              )}
             </div>
           ))}
         </div>
         <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
           <textarea
             type="text"
-            name="animal"
+            name="userInput"
             placeholder=""
-            value={animalInput}
-            onChange={(e) => setAnimalInput(e.target.value)}
+            value={userInput}
+            disabled={generating}
+            onChange={(e) => setUserInput(e.target.value)}
           />
           <input type="submit" value="Submit" />
         </form>
