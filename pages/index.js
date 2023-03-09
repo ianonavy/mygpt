@@ -62,7 +62,7 @@ export default function Home() {
                 {index % 2 === 0 ? "You:" : "MyGPT:"}
               </div>
               <div style={{ flex: 1 }}>
-                <span>{message}</span>
+                <span style={{ whiteSpace: "pre-wrap" }}>{message}</span>
               </div>
             </div>
           ))}
