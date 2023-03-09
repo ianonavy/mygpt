@@ -7,6 +7,9 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const generateChat = async (socket, messages) => {
+  const socketId = socket.id;
+  const socketSession = sessions.get(socketId);
+  console.log("Messages:", messages);
   try {
     const completion = await openai.createChatCompletion(
       {
@@ -23,16 +26,22 @@ const generateChat = async (socket, messages) => {
         .split("\n")
         .filter((line) => line.trim() !== "");
       console.log(`Received data ${data}`);
+      let assistantMessage = "";
       for (const line of lines) {
         const message = line.replace(/^data: /, "");
         if (message === "[DONE]") {
+          socketSession.messages.push({
+            role: "assistant",
+            content: assistantMessage,
+          });
           return; // Stream finished
         }
         try {
           const parsed = JSON.parse(message);
           const nextMessage = parsed.choices[0]?.delta?.content;
           if (nextMessage != null) {
-            socket.emit("message", nextMessage);
+            assistantMessage += nextMessage;
+            socket.emit("messagePart", nextMessage);
           }
         } catch (error) {
           console.error("Could not JSON parse stream message", message, error);
@@ -50,17 +59,15 @@ const generateChat = async (socket, messages) => {
         } catch (error) {
           console.error("An error occurred during OpenAI request: ", message);
         }
-        res.write(
-          `event: error\ndata: An error occurred during your request.\n\n`
-        );
-        res.write("event: end\n\n");
-        res.end();
+        socket.emit("error", "An error occurred during your request.");
       });
     } else {
       console.error("An error occurred during OpenAI request", error);
     }
   }
 };
+
+const sessions = new Map();
 
 const SocketHandler = async (req, res) => {
   if (!configuration.apiKey) {
@@ -85,15 +92,21 @@ const SocketHandler = async (req, res) => {
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
+      const socketId = socket.id;
+      sessions.set(socketId, { messages: [] });
+
       console.log("User connected");
 
       socket.on("disconnect", () => {
         console.log("User disconnected");
       });
 
-      socket.on("animal", async (content) => {
-        const messages = [{ role: "user", content }];
-        await generateChat(socket, messages);
+      socket.on("userMessage", async (content) => {
+        const socketId = socket.id;
+        const socketSession = sessions.get(socketId);
+        const userMessage = { role: "user", content };
+        socketSession.messages.push(userMessage);
+        await generateChat(socket, socketSession.messages);
       });
     });
   }

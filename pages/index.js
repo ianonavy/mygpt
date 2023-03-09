@@ -6,7 +6,7 @@ let socket;
 
 export default function Home() {
   const [animalInput, setAnimalInput] = useState("");
-  const [result, setResult] = useState("");
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const socketInitializer = async () => {
@@ -16,8 +16,8 @@ export default function Home() {
       socket.on("connect", () => {
         console.log("connected");
       });
-      socket.on("message", (e) => {
-        setResult((r) => r + e);
+      socket.on("messagePart", (e) => {
+        setMessages((r) => [...r.slice(0, -1), r[r.length - 1] + e]);
       });
     };
     socketInitializer();
@@ -25,8 +25,8 @@ export default function Home() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    setResult("");
-    socket.emit("animal", animalInput);
+    socket.emit("userMessage", animalInput);
+    setMessages((r) => [...r, animalInput, ""]);
     setAnimalInput("");
   };
 
@@ -40,6 +40,33 @@ export default function Home() {
       <main className={styles.main}>
         <img src="/dog.png" className={styles.icon} />
         <h3>Name my pet</h3>
+        <div
+          style={{ width: "800px", display: "flex", flexDirection: "column" }}
+        >
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "start",
+                marginBottom: "10px",
+              }}
+            >
+              <div
+                style={{
+                  width: "100px",
+                  textAlign: "right",
+                  paddingRight: "10px",
+                }}
+              >
+                {index % 2 === 0 ? "You:" : "MyGPT:"}
+              </div>
+              <div style={{ flex: 1 }}>
+                <span>{message}</span>
+              </div>
+            </div>
+          ))}
+        </div>
         <form onSubmit={onSubmit}>
           <input
             type="text"
@@ -50,7 +77,6 @@ export default function Home() {
           />
           <input type="submit" value="Generate names" />
         </form>
-        <div className={styles.result}>{result}</div>
       </main>
     </div>
   );
