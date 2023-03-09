@@ -98,7 +98,7 @@ const SocketHandler = async (req, res) => {
           {
             role: "system",
             content:
-              "You are a helpful assistant. Keep responses brief. Wrap all code blocks in markdown.",
+              "You are a helpful assistant called MyGPT. Keep responses brief.",
           },
         ],
       });
