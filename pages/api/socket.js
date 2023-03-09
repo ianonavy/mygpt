@@ -25,7 +25,6 @@ const generateChat = async (socket, messages) => {
         .toString()
         .split("\n")
         .filter((line) => line.trim() !== "");
-      console.log(`Received data ${data}`);
       let assistantMessage = "";
       for (const line of lines) {
         const message = line.replace(/^data: /, "");
