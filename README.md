@@ -1,9 +1,10 @@
-# OpenAI API Quickstart - Node.js example app
+# MyGPT
 
-This is an example pet name generator app used in the OpenAI API [quickstart tutorial](https://platform.openai.com/docs/quickstart). It uses the [Next.js](https://nextjs.org/) framework with [React](https://reactjs.org/). Check out the tutorial or follow the instructions below to get set up.
+MyGPT is a free ChatGPT clone powered by the same backend model. Its use requires a
+paid OpenAI developer plan and a valid API token.
 
-![Text box that says name my pet with an icon of a dog](https://user-images.githubusercontent.com/10623307/213887080-b2bc4645-7fdb-4dbd-ae42-efce00d0dc29.png)
-
+The intent of this project is to offer end users an option to use a simple
+ChatGPT-like product without having to pay for a full ChatGPT Plus subscription plan.
 
 ## Setup
 
@@ -14,7 +15,7 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
 3. Navigate into the project directory
 
    ```bash
-   $ cd openai-quickstart-node
+   $ cd mygpt
    ```
 
 4. Install the requirements
@@ -25,14 +26,18 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
 
 5. Make a copy of the example environment variables file
 
-   On Linux systems: 
+   On Linux systems:
+
    ```bash
    $ cp .env.example .env
    ```
+
    On Windows:
+
    ```powershell
    $ copy .env.example .env
    ```
+
 6. Add your [API key](https://platform.openai.com/account/api-keys) to the newly created `.env` file
 
 7. Run the app
@@ -41,4 +46,4 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
    $ npm run dev
    ```
 
-You should now be able to access the app at [http://localhost:3000](http://localhost:3000)! For the full context behind this example app, check out the [tutorial](https://platform.openai.com/docs/quickstart).
+You should now be able to access the app at [http://localhost:3000](http://localhost:3000)!
