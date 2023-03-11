@@ -21,13 +21,16 @@ function Message({content, index, generating, isLastMessage}) {
     >
       {index % 2 === 0 ? "You:" : "MyGPT:"}
     </div>
-    <div style={{ flex: 1, whiteSpace: "pre-line" }}>
+    <div style={{ flex: 1 }}>
       <ReactMarkdown
         children={content.trim()}
         components={{
           code({ node, inline, className, children, ...props }) {
+            if (inline) {
+              return <pre className={styles.inlineCode}>{children}</pre>
+            }
             const match = /language-(\w+)/.exec(className || "");
-            return !inline && match ? (
+            return match ? (
               <SyntaxHighlighter
                 children={String(children).replace(/\n$/, "")}
                 style={solarizedDark}
@@ -36,6 +39,7 @@ function Message({content, index, generating, isLastMessage}) {
                 {...props}
               />
             ) : (
+
               <SyntaxHighlighter
                 children={String(children).replace(/\n$/, "")}
                 style={solarizedDark}

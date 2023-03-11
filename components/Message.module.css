@@ -1,3 +1,13 @@
+.message pre {
+  font-family: "Consolas", monospace;
+  font-size: 15px;
+}
+
+pre.inlineCode {
+  display: inline;
+  font-weight: bold;
+}
+
 input.stop {
   background-color: #b55a75;
   flex: none;
