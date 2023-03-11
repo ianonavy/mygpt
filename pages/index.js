@@ -21,8 +21,21 @@ export default function Home() {
       socket.on("connect", () => {
         console.log("connected");
       });
-      socket.on("messagePart", (e) => {
-        setMessages((r) => [...r.slice(0, -1), r[r.length - 1] + e]);
+      socket.on("messagePart", (newContent, newId) => {
+        setMessages((r) => {
+          const lastMessage = r[r.length - 1];
+          const { id, content, role } = lastMessage;
+          if (id != newId && id != null) {
+            // Ignore new parts of old messages
+            return r;
+          }
+          const message = {
+            id,
+            content: content + newContent,
+            role,
+          };
+          return [...r.slice(0, -1), message];
+        });
       });
       socket.on("messageEnd", () => {
         setGenerating(false);
@@ -35,7 +48,11 @@ export default function Home() {
     e.preventDefault();
     console.log(e.target);
     socket.emit("userMessage", userInput);
-    setMessages((r) => [...r, userInput, ""]);
+    setMessages((r) => [
+      ...r,
+      { role: "user", content: userInput },
+      { role: "assistant", content: "", id: null },
+    ]);
     setUserInput("");
     setGenerating(true);
   };
@@ -65,7 +82,7 @@ export default function Home() {
           className={styles.chatbox}
           style={{ width: "800px", display: "flex", flexDirection: "column" }}
         >
-          {messages.map((message, index) => (
+          {messages.map(({ content }, index) => (
             <div key={index} className={styles.message}>
               <div
                 style={{
@@ -78,7 +95,7 @@ export default function Home() {
               </div>
               <div style={{ flex: 1, whiteSpace: "pre-line" }}>
                 <ReactMarkdown
-                  children={message.trim()}
+                  children={content.trim()}
                   components={{
                     code({ node, inline, className, children, ...props }) {
                       const match = /language-(\w+)/.exec(className || "");

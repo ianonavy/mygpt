@@ -49,7 +49,7 @@ const generateChat = async (socket, messages, isStopped) => {
           const nextMessage = parsed.choices[0]?.delta?.content;
           if (nextMessage != null) {
             assistantMessage += nextMessage;
-            socket.emit("messagePart", nextMessage);
+            socket.emit("messagePart", nextMessage, parsed.id);
           }
         } catch (error) {
           console.error("Could not JSON parse stream message", message, error);
