@@ -21,12 +21,16 @@ const generateChat = async (socket, messages, isStopped) => {
       { responseType: "stream", signal: controller.signal }
     );
 
+    let assistantMessage = "";
+    const addToMessage = (m) => {
+      assistantMessage += m;
+    };
+
     completion.data.on("data", (data) => {
       const lines = data
         .toString()
         .split("\n")
         .filter((line) => line.trim() !== "");
-      let assistantMessage = "";
       for (const line of lines) {
         const message = line.replace(/^data: /, "");
         const stopped = isStopped();
@@ -48,7 +52,7 @@ const generateChat = async (socket, messages, isStopped) => {
           const parsed = JSON.parse(message);
           const nextMessage = parsed.choices[0]?.delta?.content;
           if (nextMessage != null) {
-            assistantMessage += nextMessage;
+            addToMessage(nextMessage);
             socket.emit("messagePart", nextMessage, parsed.id);
           }
         } catch (error) {
