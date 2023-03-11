@@ -74,6 +74,12 @@ export default function Home() {
     }
   };
 
+  const reset = () => {
+    setMessages([]);
+    window.localStorage.setItem("messages", JSON.stringify([]));
+    socket.emit("setContext", []);
+  };
+
   return (
     <div>
       <Head>
@@ -95,6 +101,10 @@ export default function Home() {
               isLastMessage={index == messages.length - 1}
             />
           ))}
+        </div>
+        <div className={styles.conversationControls}>
+          <button onClick={reset}>Reset Conversation</button>
+          <button>Regenerate Last Message</button>
         </div>
         <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
           <textarea
