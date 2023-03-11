@@ -1,55 +1,50 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.css";
-import ReactMarkdown from "react-markdown";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { solarizedDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
-let socket;
+import Message from "../components/Message";
+import { SocketContext } from "../context/socket";
 
 export default function Home() {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [generating, setGenerating] = useState(false);
 
+  const socket = useContext(SocketContext);
   useEffect(() => {
-    const socketInitializer = async () => {
-      await fetch("/api/socket?reset=true");
-      socket = io();
+    if (socket === undefined) {
+      return;
+    }
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+    socket.on("messagePart", (newContent, newId) => {
+      setMessages((r) => {
+        const lastMessage = r[r.length - 1];
+        const { id, content, role } = lastMessage;
+        if (id != newId && id != null) {
+          // Ignore new parts of old messages
+          return r;
+        }
+        const message = {
+          id,
+          content: content + newContent,
+          role,
+        };
+        return [...r.slice(0, -1), message];
+      });
+    });
+    socket.on("messageEnd", () => {
+      setGenerating(false);
+    });
 
-      socket.on("connect", () => {
-        console.log("connected");
-      });
-      socket.on("messagePart", (newContent, newId) => {
-        setMessages((r) => {
-          const lastMessage = r[r.length - 1];
-          const { id, content, role } = lastMessage;
-          if (id != newId && id != null) {
-            // Ignore new parts of old messages
-            return r;
-          }
-          const message = {
-            id,
-            content: content + newContent,
-            role,
-          };
-          return [...r.slice(0, -1), message];
-        });
-      });
-      socket.on("messageEnd", () => {
-        setGenerating(false);
-      });
-
-      const savedMessages = localStorage.getItem("messages");
-      if (savedMessages) {
-        console.log("Restoring saved messages");
-        setMessages(JSON.parse(savedMessages));
-        socket.emit("setContext", JSON.parse(savedMessages));
-      }
-    };
-    socketInitializer();
-  }, []);
+    const savedMessages = localStorage.getItem("messages");
+    if (savedMessages) {
+      console.log("Restoring saved messages");
+      setMessages(JSON.parse(savedMessages));
+      socket.emit("setContext", JSON.parse(savedMessages));
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -79,10 +74,6 @@ export default function Home() {
     }
   };
 
-  const stopGeneration = (e) => {
-    socket.emit("stopGeneration");
-  };
-
   return (
     <div>
       <Head>
@@ -97,52 +88,12 @@ export default function Home() {
           style={{ width: "800px", display: "flex", flexDirection: "column" }}
         >
           {messages.map(({ content }, index) => (
-            <div key={index} className={styles.message}>
-              <div
-                style={{
-                  width: "80px",
-                  textAlign: "right",
-                  paddingRight: "10px",
-                }}
-              >
-                {index % 2 === 0 ? "You:" : "MyGPT:"}
-              </div>
-              <div style={{ flex: 1, whiteSpace: "pre-line" }}>
-                <ReactMarkdown
-                  children={content.trim()}
-                  components={{
-                    code({ node, inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || "");
-                      return !inline && match ? (
-                        <SyntaxHighlighter
-                          children={String(children).replace(/\n$/, "")}
-                          style={solarizedDark}
-                          language={match[1]}
-                          PreTag="div"
-                          {...props}
-                        />
-                      ) : (
-                        <SyntaxHighlighter
-                          children={String(children).replace(/\n$/, "")}
-                          style={solarizedDark}
-                          PreTag="div"
-                          {...props}
-                        />
-                      );
-                    },
-                  }}
-                />
-              </div>
-              {generating && index == messages.length - 1 && (
-                <input
-                  name="stop"
-                  className={styles.stop}
-                  onClick={stopGeneration}
-                  type="button"
-                  value="Stop"
-                />
-              )}
-            </div>
+            <Message
+              content={content}
+              index={index}
+              generating={generating}
+              isLastMessage={index == messages.length - 1}
+            />
           ))}
         </div>
         <form onSubmit={onSubmit} onKeyDown={onKeyDown}>

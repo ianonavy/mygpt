@@ -61,19 +61,7 @@
   text-align: center;
   cursor: pointer;
 }
-input.stop {
-  background-color: #b55a75;
-  flex: none;
-  position: relative;
-  right: 0;
-  float: float;
-  padding: 1rem;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-}
+
 .main .result {
   font-weight: bold;
   margin-top: 40px;
@@ -84,20 +72,6 @@ input.stop {
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
-}
-
-.message {
-  display: flex;
-  align-items: start;
-  padding: 1rem 1rem 1rem 0;
-}
-
-.message:nth-child(odd) {
-  background-color: #eee;
-}
-
-.message:nth-child(even) {
-  background-color: #f8f8f8;
 }
 
 .main p {
