@@ -16,6 +16,7 @@ warranties, and it is not intended to be run as a public SaaS offering.
 - [x] Basic conversation via OpenAI API
 - [x] Streaming message generation
 - [x] Code syntax highlighting
+- [x] Persist conversation in local browser storage
 - [ ] Configurable system prompt
 - [ ] "Click to copy" code
 - [ ] Token/cost estimator

@@ -40,9 +40,23 @@ export default function Home() {
       socket.on("messageEnd", () => {
         setGenerating(false);
       });
+
+      const savedMessages = localStorage.getItem("messages");
+      if (savedMessages) {
+        console.log("Restoring saved messages");
+        setMessages(JSON.parse(savedMessages));
+        socket.emit("setContext", JSON.parse(savedMessages));
+      }
     };
     socketInitializer();
   }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      console.log("Saving messages", messages);
+      window.localStorage.setItem("messages", JSON.stringify(messages));
+    }
+  }, [messages]);
 
   const onSubmit = (e) => {
     e.preventDefault();

@@ -80,6 +80,10 @@ const generateChat = async (socket, messages, isStopped) => {
 };
 
 const sessions = new Map();
+const systemMessage = {
+  role: "system",
+  content: "You are a helpful assistant called MyGPT. Keep responses brief.",
+};
 
 const SocketHandler = async (req, res) => {
   if (!configuration.apiKey) {
@@ -106,13 +110,7 @@ const SocketHandler = async (req, res) => {
     io.on("connection", (socket) => {
       const socketId = socket.id;
       sessions.set(socketId, {
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a helpful assistant called MyGPT. Keep responses brief.",
-          },
-        ],
+        messages: [systemMessage],
       });
 
       console.log("User connected");
@@ -123,16 +121,24 @@ const SocketHandler = async (req, res) => {
 
       let isStopped = false;
 
-      socket.on("userMessage", async (content) => {
-        const socketId = socket.id;
+      socket.on("setContext", async (messages) => {
+        console.log("User set context message");
         const socketSession = sessions.get(socketId);
+        messages = messages.map(({ role, content }) => ({ role, content }));
+        socketSession.messages = [systemMessage, ...messages];
+      });
+
+      socket.on("userMessage", async (content) => {
+        console.log("User sent message");
         const userMessage = { role: "user", content };
+        const socketSession = sessions.get(socketId);
         socketSession.messages.push(userMessage);
         isStopped = false;
         await generateChat(socket, socketSession.messages, () => isStopped);
       });
 
       socket.on("stopGeneration", async () => {
+        console.log("User requested stop generation");
         isStopped = true;
       });
     });
