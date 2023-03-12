@@ -69,8 +69,10 @@ export default function Home() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    sendUserInput(userInput);
-    setUserInput("");
+    if (userInput.trim()) {
+      sendUserInput(userInput);
+      setUserInput("");
+    }
   };
 
   const onKeyDown = (event) => {
