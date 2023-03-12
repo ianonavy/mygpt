@@ -44,6 +44,10 @@ export default function Home() {
       setMessages(JSON.parse(savedMessages));
       socket.emit("setContext", JSON.parse(savedMessages));
     }
+
+    return () => {
+      socket.disconnect();
+    };
   }, [socket]);
 
   useEffect(() => {
