@@ -42,8 +42,6 @@ const generateChat = async (socket, messages, isStopped) => {
           console.log("assistant:", assistantMessage);
           socket.emit("messageEnd", "");
           if (stopped) {
-            console.log("message:", message);
-            console.log("aborted!");
             controller.abort();
           }
           return; // Stream finished
