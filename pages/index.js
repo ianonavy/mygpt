@@ -57,17 +57,20 @@ export default function Home() {
     }
   }, [messages]);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log(e.target);
-    socket.emit("userMessage", userInput);
+  const sendUserInput = (userMessage) => {
+    socket.emit("userMessage", userMessage);
     setMessages((r) => [
       ...r,
-      { role: "user", content: userInput },
+      { role: "user", content: userMessage },
       { role: "assistant", content: "", id: null },
     ]);
-    setUserInput("");
     setGenerating(true);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    sendUserInput(userInput);
+    setUserInput("");
   };
 
   const onKeyDown = (event) => {
@@ -82,6 +85,15 @@ export default function Home() {
     setMessages([]);
     window.localStorage.setItem("messages", JSON.stringify([]));
     socket.emit("setContext", []);
+  };
+
+  const regenerate = async () => {
+    const lastUserMessage = messages[messages.length - 2].content;
+    console.log(lastUserMessage);
+    const rolledBackMessages = messages.slice(0, -2);
+    setMessages(rolledBackMessages);
+    socket.emit("setContext", rolledBackMessages);
+    sendUserInput(lastUserMessage);
   };
 
   return (
@@ -108,7 +120,7 @@ export default function Home() {
         </div>
         <div className={styles.conversationControls}>
           <button onClick={reset}>Reset Conversation</button>
-          <button>Regenerate Last Message</button>
+          <button onClick={regenerate}>Regenerate Last Message</button>
         </div>
         <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
           <textarea

@@ -17,11 +17,11 @@ warranties, and it is not intended to be run as a public SaaS offering.
 - [x] Streaming message generation
 - [x] Code syntax highlighting
 - [x] Persist conversation in local browser storage
+- [x] Stop generating
+- [x] Regenerate last response
 - [ ] Configurable system prompt
 - [ ] "Click to copy" code
 - [ ] Token/cost estimator
-- [ ] Stop generating
-- [ ] Regenerate last response
 - [ ] Edit messages
 - [ ] Review past sessions
 - [ ] Screenreader/accessibility hints
