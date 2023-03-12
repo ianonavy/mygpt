@@ -1,11 +1,37 @@
 .message pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  max-width: 680px;
   font-family: "Consolas", monospace;
   font-size: 15px;
+}
+
+.message p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.message p:last-child {
+  margin: 0;
 }
 
 pre.inlineCode {
   display: inline;
   font-weight: bold;
+}
+
+.speaker {
+  width: 80px;
+  text-align: right;
+  padding-right: 10px;
+  font-weight: bold;
+}
+.message:nth-of-type(2n) .speaker {
+  color: #10a37f;
+}
+.message:nth-of-type(2n + 1) .speaker {
+  color: #107fba;
 }
 
 input.stop {

@@ -118,21 +118,23 @@ export default function Home() {
             />
           ))}
         </div>
-        <div className={styles.conversationControls}>
-          <button onClick={reset}>Reset Conversation</button>
-          <button onClick={regenerate}>Regenerate Last Message</button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
+            <textarea
+              type="text"
+              name="userInput"
+              placeholder=""
+              value={userInput}
+              disabled={generating}
+              onChange={(e) => setUserInput(e.target.value)}
+            />
+            <input type="submit" value="Submit" />
+          </form>
+          <div className={styles.conversationControls}>
+            <button onClick={reset}>Reset Conversation</button>
+            <button onClick={regenerate}>Regenerate Last Message</button>
+          </div>
         </div>
-        <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
-          <textarea
-            type="text"
-            name="userInput"
-            placeholder=""
-            value={userInput}
-            disabled={generating}
-            onChange={(e) => setUserInput(e.target.value)}
-          />
-          <input type="submit" value="Submit" />
-        </form>
       </main>
     </div>
   );

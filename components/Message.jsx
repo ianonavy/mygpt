@@ -13,11 +13,7 @@ function Message({content, index, generating, isLastMessage}) {
 
     return <div key={index} className={styles.message}>
     <div
-      style={{
-        width: "80px",
-        textAlign: "right",
-        paddingRight: "10px",
-      }}
+    className={styles.speaker}
     >
       {index % 2 === 0 ? "You:" : "MyGPT:"}
     </div>
