@@ -117,6 +117,7 @@ export default function Home() {
               index={index}
               generating={generating}
               isLastMessage={index == messages.length - 1}
+              regenerate={regenerate}
             />
           ))}
         </div>
@@ -134,7 +135,6 @@ export default function Home() {
           </form>
           <div className={styles.conversationControls}>
             <button onClick={reset}>Reset Conversation</button>
-            <button onClick={regenerate}>Regenerate Last Message</button>
           </div>
         </div>
       </main>
