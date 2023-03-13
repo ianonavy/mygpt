@@ -98,6 +98,20 @@ export default function Home() {
     sendUserInput(lastUserMessage);
   };
 
+  const editMessage = (index, message) => {
+    setMessages((messages) => {
+      const rolledBackMessages = messages.slice(0, index);
+      console.log(rolledBackMessages);
+      socket.emit("setContext", rolledBackMessages);
+      socket.emit("userMessage", message);
+      return [
+        ...rolledBackMessages,
+        { role: "user", content: message },
+        { role: "assistant", content: "", id: null },
+      ];
+    });
+  };
+
   return (
     <div>
       <Head>
@@ -118,6 +132,7 @@ export default function Home() {
               generating={generating}
               isLastMessage={index == messages.length - 1}
               regenerate={regenerate}
+              editMessage={editMessage}
             />
           ))}
         </div>

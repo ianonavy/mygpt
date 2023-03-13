@@ -10,11 +10,17 @@ import {
   faPaperPlane,
   faRotate,
   faStop,
-  faInfo,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Message({ content, index, generating, isLastMessage, regenerate }) {
+function Message({
+  content,
+  index,
+  generating,
+  isLastMessage,
+  editMessage,
+  regenerate,
+}) {
   const [editMode, setEditMode] = useState(false);
   const [message, setMessage] = useState(content);
 
@@ -34,6 +40,7 @@ function Message({ content, index, generating, isLastMessage, regenerate }) {
 
   const saveEdit = (e) => {
     setEditMode(false);
+    editMessage(index, message);
   };
 
   const onEditChange = (e) => {
