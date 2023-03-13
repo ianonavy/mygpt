@@ -2,7 +2,7 @@
 .message {
   display: flex;
   align-items: start;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   gap: 1rem;
 }
 
@@ -51,12 +51,33 @@ pre.inlineCode {
   font-weight: bold;
 }
 
+.message textarea {
+  border-color: #107fba;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  width: 600px;
+  min-height: 73px;
+}
+
 /* right margin */
 .messageControls {
   width: 56px;
   flex-direction: column;
   display: flex;
   align-items: end;
+
+  gap: 0.5rem;
+}
+
+.messageControls button:first-child {
+  margin-top: -8px;
+}
+
+.editControls {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .messageControls button {
@@ -64,10 +85,11 @@ pre.inlineCode {
   position: relative;
   padding: 4px 8px;
 
-  color: #333333;
-  background-color: #a3a3a3;
-  font-size: 13px;
+  color: #888888;
+  background-color: transparent;
+  /* border: 1px solid #a3a3a3; */
   border: none;
+  font-size: 13px;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
@@ -76,4 +98,38 @@ pre.inlineCode {
   align-items: center;
   justify-content: center;
   gap: 3px;
+}
+
+.messageControls button:hover {
+  background-color: #cccccc;
+  color: #555555;
+}
+
+.editText {
+  width: 560px;
+}
+
+.editHint {
+  font-size: 14px;
+  color: #666666;
+}
+
+.messageControls .save {
+  background-color: #107fba;
+  color: #fff;
+}
+
+.messageControls .save:hover {
+  background-color: #1390d3;
+  color: #fff;
+}
+
+.messageControls .cancel {
+  background-color: #cccccc;
+  color: #555555;
+}
+
+.messageControls .cancel:hover {
+  background-color: #bbbbbb;
+  color: #555555;
 }

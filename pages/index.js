@@ -131,7 +131,7 @@ export default function Home() {
               disabled={generating}
               onChange={(e) => setUserInput(e.target.value)}
             />
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Send" />
           </form>
           <div className={styles.conversationControls}>
             <button onClick={reset}>Reset Conversation</button>

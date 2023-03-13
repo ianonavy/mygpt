@@ -22,6 +22,9 @@
   color: #353740;
   font-family: "ColfaxAI", Helvetica, sans-serif;
 }
+.main textarea {
+  resize: vertical;
+}
 .main {
   display: flex;
   flex-direction: column;
