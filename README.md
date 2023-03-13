@@ -19,10 +19,10 @@ warranties, and it is not intended to be run as a public SaaS offering.
 - [x] Persist conversation in local browser storage
 - [x] Stop generating
 - [x] Regenerate last response
+- [x] Edit messages
 - [ ] Configurable system prompt
 - [ ] "Click to copy" code
 - [ ] Token/cost estimator
-- [ ] Edit messages
 - [ ] Review past sessions
 - [ ] Screenreader/accessibility hints
 - [ ] Snazzy logo
