@@ -152,6 +152,7 @@ export default function Home() {
         { role: "assistant", content: "", id: null },
       ];
     });
+    setGenerating(true);
   };
 
   return (
