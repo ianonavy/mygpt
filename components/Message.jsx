@@ -47,6 +47,16 @@ function Message({
     setMessage(e.target.value);
   };
 
+  const onKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      event.stopPropagation();
+      saveEdit(event);
+    } else if (event.key === "Escape") {
+      cancelEdit(event);
+    }
+  };
+
   const isUserMessage = index % 2 === 0;
 
   return (
@@ -55,9 +65,12 @@ function Message({
       <div style={{ flex: 1 }}>
         {(editMode && (
           <>
-            <textarea className={styles.editText} onChange={onEditChange}>
-              {message}
-            </textarea>
+            <textarea
+              className={styles.editText}
+              onChange={onEditChange}
+              onKeyDown={onKeyDown}
+              value={message}
+            ></textarea>
             <p className={styles.editHint}>
               <FontAwesomeIcon icon={faTriangleExclamation} /> Editing a message
               will delete all messages after this one.
