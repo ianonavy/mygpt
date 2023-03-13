@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@dqbd/tiktoken": "^0.4.0",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",

@@ -1,16 +1,39 @@
 import { Configuration, OpenAIApi } from "openai";
 import { Server } from "socket.io";
+import { get_encoding } from "@dqbd/tiktoken";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+const encoding = get_encoding("cl100k_base");
+
+const countTokens = (messages) => {
+  let numTokens = 0;
+  for (let i = 0; i < messages.length; i++) {
+    numTokens += 4; // every message follows <im_start>{role/name}\n{content}<im_end>\n
+
+    let message = messages[i];
+    Object.keys(message).forEach((key) => {
+      const value = message[key];
+      numTokens += encoding.encode(value).length;
+
+      if (key === "name") {
+        // if there's a name, the role is omitted
+        numTokens -= 1; // role is always required and always 1 token
+      }
+    });
+  }
+  numTokens += 2; // every reply is primed with <im_start>assistant
+  return numTokens;
+};
 
 const generateChat = async (socket, messages, isStopped) => {
   const socketId = socket.id;
   const socketSession = sessions.get(socketId);
   console.log("Messages:", messages);
   const controller = new AbortController();
+  const promptTokens = countTokens(messages);
   try {
     const completion = await openai.createChatCompletion(
       {
@@ -40,7 +63,12 @@ const generateChat = async (socket, messages, isStopped) => {
             content: assistantMessage,
           });
           console.log("assistant:", assistantMessage);
-          socket.emit("messageEnd", "");
+          const completionTokens = encoding.encode(assistantMessage).length;
+          socket.emit("messageEnd", {
+            completionTokens,
+            promptTokens,
+            totalTokens: completionTokens + promptTokens,
+          });
           if (stopped) {
             controller.abort();
           }
@@ -133,6 +161,11 @@ const SocketHandler = async (req, res) => {
         socketSession.messages.push(userMessage);
         isStopped = false;
         await generateChat(socket, socketSession.messages, () => isStopped);
+      });
+
+      socket.on("userTokenReq", async (content) => {
+        console.log(content);
+        socket.emit("userTokenResp", encoding.encode(content).length);
       });
 
       socket.on("stopGeneration", async () => {

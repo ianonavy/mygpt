@@ -96,3 +96,7 @@
   text-align: center;
   cursor: pointer;
 }
+
+.costSummary h4 {
+  margin: 0;
+}

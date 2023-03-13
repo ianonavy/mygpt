@@ -20,9 +20,9 @@ warranties, and it is not intended to be run as a public SaaS offering.
 - [x] Stop generating
 - [x] Regenerate last response
 - [x] Edit messages
+- [x] Token/cost estimator
 - [ ] Configurable system prompt
 - [ ] "Click to copy" code
-- [ ] Token/cost estimator
 - [ ] Review past sessions
 - [ ] Screenreader/accessibility hints
 - [ ] Snazzy logo

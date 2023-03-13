@@ -5,10 +5,24 @@ import styles from "./index.module.css";
 import Message from "../components/Message";
 import { SocketContext } from "../context/socket";
 
+const COST_PER_1K_TOKENS = 0.002;
+
+function getCost(numTokens) {
+  return (numTokens / 1000) * COST_PER_1K_TOKENS;
+}
+
 export default function Home() {
   const [userInput, setUserInput] = useState("");
+  const [userInputTokens, setUserInputTokens] = useState(0);
   const [messages, setMessages] = useState([]);
   const [generating, setGenerating] = useState(false);
+  const [totalTokens, setTotalTokens] = useState(0);
+  const initialTokenStats = {
+    completionTokens: 0,
+    promptTokens: 0,
+    totalTokens: 0,
+  };
+  const [tokenStats, setTokenStats] = useState(initialTokenStats);
 
   const socket = useContext(SocketContext);
   useEffect(() => {
@@ -34,8 +48,13 @@ export default function Home() {
         return [...r.slice(0, -1), message];
       });
     });
-    socket.on("messageEnd", () => {
+    socket.on("messageEnd", (e) => {
       setGenerating(false);
+      setTokenStats(e);
+      setTotalTokens((total) => total + e.totalTokens);
+    });
+    socket.on("userTokenResp", (e) => {
+      setUserInputTokens(e);
     });
 
     const savedMessages = localStorage.getItem("messages");
@@ -43,6 +62,14 @@ export default function Home() {
       console.log("Restoring saved messages");
       setMessages(JSON.parse(savedMessages));
       socket.emit("setContext", JSON.parse(savedMessages));
+    }
+    const savedTokenStats = localStorage.getItem("tokenStats");
+    if (savedTokenStats) {
+      setTokenStats(JSON.parse(savedTokenStats));
+    }
+    const savedTotalTokens = localStorage.getItem("totalTokens");
+    if (savedTotalTokens) {
+      setTotalTokens(JSON.parse(savedTotalTokens));
     }
 
     return () => {
@@ -56,6 +83,18 @@ export default function Home() {
       window.localStorage.setItem("messages", JSON.stringify(messages));
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (tokenStats.totalTokens > 0) {
+      window.localStorage.setItem("tokenStats", JSON.stringify(tokenStats));
+    }
+  }, [tokenStats]);
+
+  useEffect(() => {
+    if (totalTokens) {
+      window.localStorage.setItem("totalTokens", JSON.stringify(totalTokens));
+    }
+  }, [totalTokens]);
 
   const sendUserInput = (userMessage) => {
     socket.emit("userMessage", userMessage);
@@ -76,6 +115,7 @@ export default function Home() {
   };
 
   const onKeyDown = (event) => {
+    socket.emit("userTokenReq", userInput);
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       event.stopPropagation();
@@ -85,6 +125,8 @@ export default function Home() {
 
   const reset = () => {
     setMessages([]);
+    setTokenStats(initialTokenStats);
+    setTotalTokens(0);
     window.localStorage.setItem("messages", JSON.stringify([]));
     socket.emit("setContext", []);
   };
@@ -150,6 +192,18 @@ export default function Home() {
           </form>
           <div className={styles.conversationControls}>
             <button onClick={reset}>Reset Conversation</button>
+          </div>
+          <div className={styles.costSummary}>
+            <h4>Cost estimates</h4>
+            <div>
+              Next message: at least $
+              {getCost(tokenStats.totalTokens + userInputTokens).toFixed(6)}
+            </div>
+            <div>Total cost: ${getCost(totalTokens).toFixed(6)}</div>
+            <div>
+              Tokens remaining:{" "}
+              {4096 - (tokenStats.totalTokens + userInputTokens)}
+            </div>
           </div>
         </div>
       </main>
