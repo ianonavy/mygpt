@@ -128,6 +128,11 @@ export default function Home() {
     setTokenStats(initialTokenStats);
     setTotalTokens(0);
     window.localStorage.setItem("messages", JSON.stringify([]));
+    window.localStorage.setItem(
+      "tokenStats",
+      JSON.stringify(initialTokenStats)
+    );
+    window.localStorage.setItem("totalTokens", JSON.stringify(0));
     socket.emit("setContext", []);
   };
 
