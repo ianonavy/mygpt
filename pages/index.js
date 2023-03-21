@@ -169,10 +169,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h3>MyGPT</h3>
-        <div
-          className={styles.chatbox}
-          style={{ width: "800px", display: "flex", flexDirection: "column" }}
-        >
+        <div className={styles.chatbox}>
           {messages.map(({ content }, index) => (
             <Message
               content={content}
@@ -184,7 +181,7 @@ export default function Home() {
             />
           ))}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div className={styles.controls}>
           <form onSubmit={onSubmit} onKeyDown={onKeyDown}>
             <textarea
               type="text"
